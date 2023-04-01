@@ -92,17 +92,18 @@ function tryGetParentFieldTypeName(
   schema,
   is_debug_mode
 ) {
-  if (!schema[rootTypeName]) {
-    throw `Cannot find TypeName "${rootTypeName}".`;
+  const _rootTypeName = typeof rootTypeName === "string" && rootTypeName.replace(/!$/,"");
+  if (!schema[_rootTypeName]) {
+    throw `Cannot find TypeName "${_rootTypeName}".`;
   }
 
-  const typeEntry = schema[rootTypeName];
+  const typeEntry = schema[_rootTypeName];
   const typeFields =
     (typeEntry && typeEntry.getFields && typeEntry.getFields()) || {};
 
   if (is_debug_mode) {
     console.log(
-      `Current rootTypeName is "${rootTypeName}", will search TypeField named "${fieldPath[0]}".`
+      `Current rootTypeName is "${_rootTypeName}", will search TypeField named "${fieldPath[0]}".`
     );
   }
 
@@ -117,7 +118,7 @@ function tryGetParentFieldTypeName(
   }
 
   if (fieldPath.length === 1) {
-    return rootTypeName;
+    return _rootTypeName;
   }
 
   const fieldTypeName = extractFieldType(typeFields[fieldPath[0]].type);
